@@ -18,7 +18,7 @@ def rating_score(rating):
 data['Scores']  = data['Ratings'].apply(rating_score)
 X = data['Review']
 Y = data['Scores']
-X_test,X_train,Y_test,Y_train = train_test_split(X,Y,test_size=0.1,random_state=42)
+X_test,X_train,Y_test,Y_train = train_test_split(X,Y,test_size=0.4,random_state=42)
 
 vectorizer = TfidfVectorizer(max_features=5000)
 X_train_transformed = vectorizer.fit_transform(X_train)
@@ -39,3 +39,12 @@ plt.bar(cat,val,color=['Green','Red'])
 plt.ylabel("No. of reviews")
 plt.xlabel("Review Category")
 plt.show()
+
+review = input("Enter your review:")
+review_transformed = vectorizer.transform([review])
+result = model.predict(review_transformed)
+if result[0]==1:
+	print("Positive")
+else:
+	print("Negative")	
+

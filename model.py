@@ -10,11 +10,14 @@ data = pd.read_csv('ChatGPT_Reviews.csv')
 data['Review'] = data['Review'].fillna("")
 data['Ratings'] = data['Ratings'].fillna(3)
 
+
 def rating_score(rating):
 	if rating<=2:
-		return 0
-	elif rating>=3:
+		return -1
+	elif rating>3:
 		return 1
+	else:
+		return 0
 data['Scores']  = data['Ratings'].apply(rating_score)
 X = data['Review']
 Y = data['Scores']
@@ -30,12 +33,17 @@ model.fit(X_train_transformed,Y_train)
 Y_pred = model.predict(X_test_transformed)
 print("Accuracy:", accuracy_score(Y_test, Y_pred))
 print("Classification Report:\n", classification_report(Y_test, Y_pred))
-pos = np.sum(Y_pred==1)
-neg = np.sum(Y_pred==0)
 
-cat = ['Positive','Negative']
-val = [pos,neg]
-plt.bar(cat,val,color=['Green','Red'])
+
+#Overall Data:
+
+#After Application of model: Test Data
+pos = np.sum(Y_pred==1)
+neu = np.sum(Y_pred==0)
+neg = np.sum(Y_pred==-1)
+cat = ['Positive','Neutral','Negative']
+val = [pos,neu,neg]
+plt.bar(cat,val,color=['Green','Yellow','Red'])
 plt.ylabel("No. of reviews")
 plt.xlabel("Review Category")
 plt.show()
@@ -45,6 +53,8 @@ review_transformed = vectorizer.transform([review])
 result = model.predict(review_transformed)
 if result[0]==1:
 	print("Positive")
+elif result[0]==0:
+	print("Neutral")
 else:
 	print("Negative")	
 
